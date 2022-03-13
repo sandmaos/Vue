@@ -2,9 +2,9 @@
   <div id="root">
   <div class="todo-container">
   <div class="todo-wrap">
-    <MyHeader @addTodo="addTodo"/>
-    <MyList :todos="todos" />
-    <MyFooter :todos="todos" @doneAllTodo="doneAllTodo" @clearAllDone="clearAllDone"/>
+    <MyHeader :addTodo="addTodo"/>
+    <MyList :todos="todos" :checkTodo="checkTodo" :delTodo="delTodo"/>
+    <MyFooter :todos="todos" :doneAllTodo="doneAllTodo" :clearAllDone="clearAllDone"/>
   </div>
   </div>
   </div>
@@ -21,6 +21,11 @@ import MyFooter from './components/MyFooter.vue'
       data() {
         return {
           todos:JSON.parse(localStorage.getItem('todos')) || []
+          // todos:[
+          //     {id:'001',title:'吃饭',done:true},
+          //     {id:'002',title:'睡觉',done:false},
+          //     {id:'003',title:'喝水',done:true},
+          // ]
         }
     },
     methods: {
@@ -65,14 +70,6 @@ import MyFooter from './components/MyFooter.vue'
       // todos(val){
       //   localStorage.setItem('todos',JSON.stringify(val))
       // }
-    },
-    mounted() {
-      this.$bus.$on('checkTodo',this.checkTodo)
-      this.$bus.$on('delTodo',this.delTodo)
-    },
-    beforeDestroy() {
-      this.$bus.$off('checkTodo')
-      this.$bus.$off('delTodo')
     },
   }
 </script>
