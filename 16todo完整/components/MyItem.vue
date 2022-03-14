@@ -1,6 +1,5 @@
 <template>
-<!-- <transition name="todo" appear> -->
-    <li >
+  <li>
     <label>
         <input type="checkbox" 
         :checked="todo.done" 
@@ -19,8 +18,6 @@
     <button v-show="!todo.isEdit" class="btn btn-edit" @click="handleEdit(todo)">编辑</button>
 
     </li>
-<!-- </transition> -->
-  
 </template>
 
 <script>
@@ -100,23 +97,4 @@ li:last-child {
 li:hover{
     background-color: #ddd;
 }
-
-
-.todo-enter-active{
-    animation: myMove 0.5s;
-}
-
-.todo-leave-active{
-    animation: myMove 0.5s reverse;
-}
-
-@keyframes myMove {
-    from{
-        transform: translateX(100%);
-    }
-    to{
-        transform: translateX(0%);
-    }
-}
-
 </style>

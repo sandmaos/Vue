@@ -3,19 +3,15 @@
   <div class="todo-container">
   <div class="todo-wrap">
     <MyHeader @addTodo="addTodo"/>
-
     <MyList :todos="todos" />
-
-    <MyFooter :todos="todos" 
-    @doneAllTodo="doneAllTodo" 
-    @clearAllDone="clearAllDone"/>
-
+    <MyFooter :todos="todos" @doneAllTodo="doneAllTodo" @clearAllDone="clearAllDone"/>
   </div>
   </div>
   </div>
 </template>
 
 <script>
+import pubsub, { PubSub } from 'pubsub-js'
 import MyHeader from './components/MyHeader.vue'
 import MyList from './components/MyList.vue'
 import MyFooter from './components/MyFooter.vue'
@@ -34,13 +30,13 @@ import MyFooter from './components/MyFooter.vue'
         console.log("在App.vue中收到的",x)
         this.todos.unshift(x)
       },
-      checkTodo(id){
+      checkTodo(_,id){
         this.todos.forEach((todo) => {
           if(todo.id===id)
             todo.done=!todo.done
         })
       },
-      delTodo(id){
+      delTodo(_,id){ //_占位
         this.todos.forEach((todo) => {
           if(todo.id===id){
             this.todos.shift(todo)
@@ -57,13 +53,7 @@ import MyFooter from './components/MyFooter.vue'
         this.todos=this.todos.filter((todo) => {
           return !todo.done
         });
-      },
-      updateTodo(id,title){
-        this.todos.forEach((todo) => {
-          if(todo.id===id)
-            todo.title=title
-        })
-      },
+      }
     },
     watch:{
       todos:{
@@ -79,14 +69,15 @@ import MyFooter from './components/MyFooter.vue'
     },
     mounted() {
       this.$bus.$on('checkTodo',this.checkTodo)
-      this.$bus.$on('delTodo',this.delTodo)
-      this.$bus.$on('updateTodo',this.updateTodo)
+      // this.$bus.$on('delTodo',this.delTodo)
+      this.pubId=pubsub.subscribe('delTodo',this.delTodo)
+      this.pubId2=pubsub.subscribe('checkTodo',this.checkTodo)
     },
-    
     beforeDestroy() {
       this.$bus.$off('checkTodo')
-      this.$bus.$off('delTodo')
-      this.$bus.$off('updateTodo')
+      // this.$bus.$off('delTodo')
+      pubsub.unsubscribe(this.pubId)
+      pubsub.unsubscribe(this.pubId2)
     },
   }
 </script>
@@ -114,21 +105,10 @@ body {
   background-color: #da4f49;
   border: 1px solid #bd362f;
 }
-.btn-edit{
-  color: #fff;
-  background-color: skyblue;
-  border: 1px solid #398cda;
-  margin-right: 5px;
-}
 
 .btn-danger:hover {
   color: #fff;
   background-color: #bd362f;
-}
-
-.btn-edit:hover {
-  color: #fff;
-  background-color: #337ec4;
 }
 
 .btn:focus{
